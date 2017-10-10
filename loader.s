@@ -8,6 +8,7 @@ CHECKSUM     equ -MAGIC_NUMBER  ; calculate the checksum
 KERNEL_STACK_SIZE equ 4096      ; size of stack in bytes
 
 extern sum_of_three             ; the function is defined elsewhere
+extern main
 
 section .text:                  ; start of the text (code) section
 align 4                         ; the code must be 4 byte aligned
@@ -24,10 +25,13 @@ loader:                                           ; the loader label (defined as
     mov eax, 0xCAFEBABE                           ; place the number 0xCAFEBABE in the register eax
     mov esp, kernel_stack + KERNEL_STACK_SIZE     ; point esp to the start of the
                                                   ; stack (end of memory area)
-    push dword 3                                  ; arg3
-    push dword 2                                  ; arg2
-    push dword 1                                  ; arg1
-    call sum_of_three                             ; call the function, the result will be in EAX
+    ;Example of how to call a function and send args
+    ;push dword 3                                  ; arg3
+    ;push dword 2                                  ; arg2
+    ;push dword 1                                  ; arg1
+    ;call sum_of_three                             ; call the function, the result will be in EAX
+
 
 .loop:
+    call main
     jmp .loop                   ; loop forever
