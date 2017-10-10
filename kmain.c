@@ -34,7 +34,18 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg) {
 
 /* The main program loop */
 int main() {
-  fb_write_cell(0, 'A', FB_GREEN, FB_DARK_GREY);
+  fb_write_cell(0, 'H', FB_BLACK, FB_GREEN);
+  fb_write_cell(2, 'E', FB_BLACK, FB_GREEN);
+  fb_write_cell(4, 'L', FB_BLACK, FB_GREEN);
+  fb_write_cell(6, 'L', FB_BLACK, FB_GREEN);
+  fb_write_cell(8, 'O', FB_BLACK, FB_GREEN);
+  fb_write_cell(10, ' ', FB_BLACK, FB_GREEN);
+  fb_write_cell(12, 'W', FB_BLACK, FB_GREEN);
+  fb_write_cell(14, 'O', FB_BLACK, FB_GREEN);
+  fb_write_cell(16, 'R', FB_BLACK, FB_GREEN);
+  fb_write_cell(18, 'L', FB_BLACK, FB_GREEN);
+  fb_write_cell(20, 'D', FB_BLACK, FB_GREEN);
+  fb_write_cell(22, '!', FB_BLACK, FB_GREEN);
 
   return 0;
 }
