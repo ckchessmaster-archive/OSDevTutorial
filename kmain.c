@@ -55,14 +55,14 @@ void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg) {
   fb[i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
 }
 
-int writeln(char *buf, unsigned int len) {
+int fb_writeln(char *buf, unsigned int len) {
   unsigned int x = 0, i = 0;
 
   // print the message to the framebuffer
   for(; i < (2 * len); i+=2) {
     //If the character is a newline go down a line
     if(buf[x] == '\n') {
-      fb_move_cursor();
+      //fb_move_cursor();
     } else {
       fb_write_cell(i, buf[x], FB_BLACK, FB_GREEN);
       cursorPos++;
@@ -75,8 +75,8 @@ int writeln(char *buf, unsigned int len) {
 /* The main program loop */
 int main() {
   char message[24] = "Hello World!\n more text";
-  writeln(message, 24);
-  writeln(message, 24);
+  fb_writeln(message, 24);
+  fb_writeln(message, 24);
 
   return 0;
 }
