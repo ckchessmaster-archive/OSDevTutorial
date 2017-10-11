@@ -1,5 +1,5 @@
-#ifndef INCLUDE_IO_H
-#define INCLUDE_IO_H
+#ifndef INCLUDE_IOASM_H
+#define INCLUDE_IOASM_H
 
 /** outb:
  * Sends the given data to the given I/O port. Defined in io.s
