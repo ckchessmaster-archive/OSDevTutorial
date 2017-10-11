@@ -1,4 +1,4 @@
-export OBJECTS = loader.o kmain.o ioasm.o
+export OBJECTS = loader.o kmain.o ioasm.o io.o
 
 all:
 	+$(MAKE) -C source
