@@ -1,4 +1,6 @@
 Resources/
+log/
+
 *.o
 *.elf
 *.iso
