@@ -27,21 +27,19 @@
 #define FB_WHITE         15
 
 // The framebuffer for writing to the screen
-char *fb = (char *) 0x000B8000;
+static char *fb = (char *) 0x000B8000;
 
 /** fb_move_cursor:
  * Moves the cursor of the framebuffer to the given position
  *
  * @param pos The new position of the cursor
  */
- /*
 static void fb_move_cursor(unsigned short pos) {
   outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
   outb(FB_DATA_PORT, ((pos >> 8) & 0x00FF));
   outb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
   outb(FB_DATA_PORT, pos & 0x00FF);
 }
-*/
 
 /** fb_write_cell:
  * Writes a character with the given foreground and background to position i
@@ -64,6 +62,8 @@ static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg)
 int fb_print(char *str, unsigned int length) {
   unsigned int i = 0, x = 0;
 
+  fb_move_cursor(160);
+
   // print the message to the framebuffer
   for(; i < (2 * length); i+=2) {
     fb_write_cell(i, str[x], FB_BLACK, FB_GREEN);
@@ -78,6 +78,7 @@ int fb_print(char *str, unsigned int length) {
  */
 int fb_println(char *str, unsigned int length) {
   fb_print(str, length);
+
 
   return 0;
 }
