@@ -78,11 +78,34 @@ static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg)
   fb[i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
 }//end fb_write_cell
 
+/** fb_scrollUp:
+ * Scroll the screen upwards so we can keep writing to the screen
+ *
+ */
+static void fb_scrollUp() {
+  // copy all memory upwards
+  //for(int i = 0; i < 2 * (convertPosToFB(cursorX, cursorY)); i++) {
+    //fb[i] = fb[i + 2];
+  //}
+
+  // set cursor to the bottom line
+  cursorX = 0;
+  cursorY = 24;
+}//end fb_scrollUp
+
 /** fb_print:
  * Print a string of text to the framebuffer
  * @param *str The character array to print
  */
 int fb_print(char *str, unsigned int length) {
+  // scroll the screen up if we are at the bottom
+  if(cursorY == 10) {
+    fb_scrollUp();
+    fb_write_cell(0, 'X', FB_BLACK, FB_RED);
+  }
+
+  //fb_write_cell(0, 'X', FB_BLACK, FB_RED);
+
   unsigned int i = 0, j = 2 * (convertPosToFB(cursorX, cursorY)); // framebuffer location is twice the cursor position
   unsigned short x = 0, y = 0;
 
@@ -94,7 +117,7 @@ int fb_print(char *str, unsigned int length) {
       y++;
       x = 0;
       cursorX = 0;
-      j = 2 * (convertPosToFB(x, cursorY + 1));
+      j = 2 * (convertPosToFB(x, ++cursorY));
     } else {
       // print the character
       fb_write_cell(j, str[i], FB_BLACK, FB_GREEN);
