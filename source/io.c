@@ -29,17 +29,24 @@
 // The framebuffer for writing to the screen
 static char *fb = (char *) 0x000B8000;
 
+// The current cursor position
+static unsigned short cursorPos = 0;
+
 /** fb_move_cursor:
  * Moves the cursor of the framebuffer to the given position
  *
  * @param pos The new position of the cursor
  */
 static void fb_move_cursor(unsigned short pos) {
+  // update pos
+  cursorPos = pos;
+
+  // move the cursor
   outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
   outb(FB_DATA_PORT, ((pos >> 8) & 0x00FF));
   outb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
   outb(FB_DATA_PORT, pos & 0x00FF);
-}
+}// end fb_move_cursor
 
 /** fb_write_cell:
  * Writes a character with the given foreground and background to position i
@@ -53,24 +60,26 @@ static void fb_move_cursor(unsigned short pos) {
 static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg) {
   fb[i] = c;
   fb[i + 1] = ((fg & 0x0F) << 4) | (bg & 0x0F);
-}
+}//end fb_write_cell
 
 /** fb_print:
  * Print a string of text to the framebuffer
- * @param *buf The character array to print
+ * @param *str The character array to print
  */
 int fb_print(char *str, unsigned int length) {
-  unsigned int i = 0, x = 0;
-
-  fb_move_cursor(160);
+  unsigned int i = 0, x = 2 * cursorPos;
 
   // print the message to the framebuffer
-  for(; i < (2 * length); i+=2) {
-    fb_write_cell(i, str[x], FB_BLACK, FB_GREEN);
-    x++;
+  for(; i < length; i++) {
+    fb_write_cell(x, str[i], FB_BLACK, FB_GREEN);
+    x+=2;
   }
+
+  // update the cursor position
+  fb_move_cursor(cursorPos + (length - 1));
+
   return 0;
-}
+}//end fb_print
 
 /** fb_println:
  * Print a string of text to the framebuffer and move to the next line
