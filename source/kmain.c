@@ -2,8 +2,8 @@
 
 /* The main program loop */
 int main() {
-  //char message[] = "Hello World!Hello World!Hello World!Hello World!Hello World!H"; //Max length = 61 characters
-  char message[] = "Hello World!Hello World!Hello World!Hello World!Hello World!Helllo World!"; //Max length = 61 characters
+  //char message[] = "000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999"; // wrap around text example
+  char message[] = "Hello World!";
   fb_println(message, sizeof(message));
   fb_println(message, sizeof(message));
 
