@@ -67,7 +67,7 @@ static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg)
  * @param *str The character array to print
  */
 int fb_print(char *str, unsigned int length) {
-  unsigned int i = 0, x = 2 * cursorPos;
+  unsigned int i = 0, x = 2 * cursorPos; // framebuffer location is twice the cursor position
 
   // print the message to the framebuffer
   for(; i < length; i++) {
@@ -76,7 +76,7 @@ int fb_print(char *str, unsigned int length) {
   }
 
   // update the cursor position
-  fb_move_cursor(cursorPos + (length - 1));
+  fb_move_cursor(cursorPos + (length - 1)); // Subtract one so that we don't get an extra space
 
   return 0;
 }//end fb_print
