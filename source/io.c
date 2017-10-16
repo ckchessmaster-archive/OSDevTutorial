@@ -30,16 +30,32 @@
 static char *fb = (char *) 0x000B8000;
 
 // The current cursor position
-static unsigned short cursorPos = 0;
+static unsigned short cursorX = 0;
+static unsigned short cursorY = 0;
+
+/** convertPosToFB:
+ * Convert x and y coordinates to framebuffer coordinates
+ *
+ * @param x The x position of the cursor
+ * @param y The y position of the cursor
+ */
+static unsigned short convertPosToFB(unsigned short x, unsigned short y) {
+  return (x + (80 * y));
+}//end convertPosToFB
 
 /** fb_move_cursor:
  * Moves the cursor of the framebuffer to the given position
  *
- * @param pos The new position of the cursor
+ * @param x The new X position of the cursor
+ * @param y The new Y position of the cursor
  */
-static void fb_move_cursor(unsigned short pos) {
-  // update pos
-  cursorPos = pos;
+static void fb_move_cursor(unsigned short x, unsigned short y) {
+  // update position
+  cursorX = x;
+  cursorY = y;
+
+  // Convert to framebuffer location (where 80 is the max width)
+  unsigned short pos = convertPosToFB(x, y);
 
   // move the cursor
   outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
@@ -67,16 +83,36 @@ static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned bg)
  * @param *str The character array to print
  */
 int fb_print(char *str, unsigned int length) {
-  unsigned int i = 0, x = 2 * cursorPos; // framebuffer location is twice the cursor position
+  unsigned int i = 0, j = 2 * (convertPosToFB(cursorX, cursorY)); // framebuffer location is twice the cursor position
+  unsigned short x = 0, y = 0;
 
   // print the message to the framebuffer
   for(; i < length; i++) {
-    fb_write_cell(x, str[i], FB_BLACK, FB_GREEN);
-    x+=2;
-  }
+
+    // if there is a newline character then go to the next line
+    if(str[i] == '\n') {
+      y++;
+      x = 0;
+      cursorX = 0;
+      j = 2 * (convertPosToFB(x, cursorY + 1));
+    } else {
+      // print the character
+      fb_write_cell(j, str[i], FB_BLACK, FB_GREEN);
+      j+=2;
+
+      // increment the cursor loction
+      if(x < 80) {
+        x++;
+      } else {
+        x = 0;
+        cursorX = 0;
+        y++;
+      }//end cursor handleing
+    }// end newline check
+  }//end printing the message
 
   // update the cursor position
-  fb_move_cursor(cursorPos + (length - 1)); // Subtract one so that we don't get an extra space
+  fb_move_cursor((cursorX + x) - 1, cursorY + y); // subtract 1 from x so we don't get an extra space
 
   return 0;
 }//end fb_print
@@ -88,6 +124,8 @@ int fb_print(char *str, unsigned int length) {
 int fb_println(char *str, unsigned int length) {
   fb_print(str, length);
 
+  // move to the next line
+  fb_move_cursor(0, ++cursorY);
 
   return 0;
 }
